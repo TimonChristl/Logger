@@ -9,11 +9,11 @@ namespace Logging.Sinks
 
 	/// <summary>
 	/// An <see cref="ILogSink"/> implementation that writes log messages to a binary log file. The file format is
-	/// specific to T.Utils and may change between releases. To read a binary log file back, a <see cref="BinaryFileLogSource"/>
+	/// specific to T.Utils and may change between releases. To read a binary log file back, a <see cref="Logging.Sources.BinaryFileLogSource"/>
 	/// can be used.
 	/// </summary>
 	/// <remarks>
-	/// The extra data field of log messages is converted to a string before it is written to the file. Writing a binary log file and reading it back using <see cref="BinaryFileLogSource"/>
+	/// The extra data field of log messages is converted to a string before it is written to the file. Writing a binary log file and reading it back using <see cref="Logging.Sources.BinaryFileLogSource"/>
 	/// therefore does not generate an identical stream of log messages.
 	/// </remarks>
 	public class BinaryFileLogSink : BaseLogSink

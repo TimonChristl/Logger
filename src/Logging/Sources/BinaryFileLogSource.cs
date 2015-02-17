@@ -8,7 +8,7 @@ namespace Logging.Sources
 {
 
 	/// <summary>
-	/// Implementation of <see cref="ILogSource"/> that reads a binary log file produced by <see cref="BinaryFileLogSink"/> to produce
+	/// Implementation of <see cref="ILogSource"/> that reads a binary log file produced by <see cref="Logging.Sinks.BinaryFileLogSink"/> to produce
 	/// a stream of log messages.
 	/// </summary>
 	public class BinaryFileLogSource : BaseLogSource
@@ -24,7 +24,7 @@ namespace Logging.Sources
 		#region Constructor
 
 		/// <summary>
-		/// Initializes a new instance of <see cref="BinaryFileLogSource"/> with the given filename.
+		/// Initializes a new instance of <see cref="Logging.Sources.BinaryFileLogSource"/> with the given filename.
 		/// </summary>
 		/// <param name="filename"></param>
 		public BinaryFileLogSource(string filename)
@@ -89,7 +89,7 @@ namespace Logging.Sources
 	}
 
 	/// <summary>
-	/// Indicates that a log message has an unknown version while reading a binary log file using <see cref="BinaryFileLogSource"/>.
+	/// Indicates that a log message has an unknown version while reading a binary log file using <see cref="Logging.Sources.BinaryFileLogSource"/>.
 	/// </summary>
 	[Serializable]
 	public class UnknownBinaryLogMessageVersionException : Exception

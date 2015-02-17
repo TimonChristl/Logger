@@ -119,7 +119,7 @@ namespace Logging
 		/// <summary>
 		/// Adds a new log message. Note that the nesting level of the log message will be overridden with the current nesting level
 		/// for the current thread. This method is ideal for feeding log messages from a different logging system to this one,
-		/// or to replay a stream of log messages from an <see cref="ILogSource"/>.
+		/// or to replay a stream of log messages from an <see cref="Logging.Sources.ILogSource"/>.
 		/// </summary>
 		/// <param name="logMessage"></param>
 		public void Log(LogMessage logMessage)
