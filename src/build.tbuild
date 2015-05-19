@@ -20,8 +20,8 @@
         <fs:WriteTextFile Filename="${TBuild.ScriptDir}\TC.Logging.nuspec" Property="${Temp}"/>
 
         <core:Exec Filename="${Exe.NuGet}"
-                   Arguments="pack ${TBuild.ScriptDir}\src\TC.Logging.nuspec"
-                   WorkingDirectory="${TBuild.ScriptDir}\src"
+                   Arguments="pack ${TBuild.ScriptDir}\TC.Logging.nuspec"
+                   WorkingDirectory="${TBuild.ScriptDir}"
                    />
     </Steps>
 </Script>
