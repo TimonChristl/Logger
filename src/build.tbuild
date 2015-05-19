@@ -22,6 +22,7 @@
         <core:Exec Filename="${Exe.NuGet}"
                    Arguments="pack ${TBuild.ScriptDir}\TC.Logging.nuspec"
                    WorkingDirectory="${TBuild.ScriptDir}"
+                   UseShellExecute="false"
                    />
     </Steps>
 </Script>
