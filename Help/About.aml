@@ -2,7 +2,8 @@
 <topic id="56c2cf45-a9e8-4c16-9b35-ac827d17b300" revisionNumber="1">
   <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
     <introduction>
-      <para>The Logging library is a class library for .NET 4.0 and above that provides a relatively simple but powerful logging framework.</para>
+      <para>The TC.Logging library is a class library for .NET 4.0 and above that provides a relatively simple but powerful logging framework.</para>
+		<para>Project page on GitHub: <link xlink:href="https://github.com/TimonChristl/TC.Logging"></link></para>
     </introduction>
     <relatedTopics/>
   </developerConceptualDocument>
