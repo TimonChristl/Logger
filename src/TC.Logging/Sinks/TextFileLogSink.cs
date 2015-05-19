@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
-using Logging.Formatters;
+using TC.Logging.Formatters;
 
-namespace Logging.Sinks
+namespace TC.Logging.Sinks
 {
 
 	/// <summary>
@@ -13,8 +13,8 @@ namespace Logging.Sinks
 	/// </summary>
 	/// <remarks>
 	/// When two TextFileLogSinks are appending to the same text file at the same time, it is possible that one of the two
-	/// log messages gets lost due to a race condition between opening the file in append mode, and writing the line. It is best to avoid logging
-	/// to the same file from more than one logger concurrently. If really necessary, protect calls to Log with a Mutex.
+	/// log messages gets lost due to a race condition between opening the file in append mode, and writing the line
+	/// It is best to avoid logging to the same file from more than one logger concurrently.
 	/// </remarks>
 	public class TextFileLogSink : BaseTextLogSink
 	{

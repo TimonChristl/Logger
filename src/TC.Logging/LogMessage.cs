@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Logging
+namespace TC.Logging
 {
 
 	/// <summary>

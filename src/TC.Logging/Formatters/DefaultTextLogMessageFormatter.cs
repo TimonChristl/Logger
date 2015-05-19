@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Logging.Formatters
+namespace TC.Logging.Formatters
 {
 
 	/// <summary>

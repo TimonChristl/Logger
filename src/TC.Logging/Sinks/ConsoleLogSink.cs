@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Logging.Formatters;
+using TC.Logging.Formatters;
 
-namespace Logging.Sinks
+namespace TC.Logging.Sinks
 {
 
 	/// <summary>

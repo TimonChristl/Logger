@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("Release")]
 #endif
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Logger")]
+[assembly: AssemblyProduct("TC.Logging")]
 [assembly: AssemblyCopyright("©2015 by Timon Christl")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

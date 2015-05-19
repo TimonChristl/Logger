@@ -1,21 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace Logging.Sinks
+namespace TC.Logging.Sources
 {
 
 	/// <summary>
-	/// Abstract base class for implementing <see cref="ILogSink"/>.
+	/// Base class for implementations of <see cref="ILogSource"/>.
 	/// </summary>
-	public abstract class BaseLogSink : ILogSink
+	public abstract class BaseLogSource : ILogSource
 	{
 
-		#region Public methods
+		#region ILogSource Members
 
-		/// <summary>
-		/// Process the log message <paramref name="logMessage"/>.
-		/// </summary>
-		/// <param name="logMessage"></param>
-		public abstract void Process(LogMessage logMessage);
+		/// <inheritdoc/>
+		public abstract IEnumerable<LogMessage> GetMessages();
 
 		#endregion
 
@@ -24,17 +24,17 @@ namespace Logging.Sinks
 		private bool isDisposed = false;
 
 		/// <summary>
-		/// Finalizes the <see cref="BaseLogSink"/> instance.
+		/// Finalizes the <see cref="BaseLogSource"/> instance.
 		/// Calls <see cref="DisposeCore"/> with argument <c>false</c>.
 		/// </summary>
-		~BaseLogSink()
+		~BaseLogSource()
 		{
 			if(!isDisposed)
 				DisposeCore(false);
 		}
 
 		/// <summary>
-		/// Disposes the <see cref="BaseLogSink"/> instance.
+		/// Disposes the <see cref="BaseLogSource"/> instance.
 		/// Calls <see cref="DisposeCore"/> with argument <c>true</c>.
 		/// </summary>
 		public void Dispose()
@@ -59,7 +59,7 @@ namespace Logging.Sinks
 		}
 
 		/// <summary>
-		/// Flag whether this <see cref="BaseLogSink"/> is disposed.
+		/// Flag whether this <see cref="BaseLogSource"/> is disposed.
 		/// </summary>
 		protected bool IsDisposed
 		{

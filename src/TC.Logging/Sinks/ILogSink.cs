@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logging.Sinks
+namespace TC.Logging.Sinks
 {
 
 	/// <summary>

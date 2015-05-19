@@ -10,3 +10,7 @@
 /Help/LoggingHelp.shfbproj_Timon
 /Help/Logging_Help_Log.log
 /Help/Output
+/src/TC.Logging/bin
+/src/TC.Logging/obj
+/src/_Build/obj/Debug
+/src/TC.Logging.v12.suo

@@ -7,8 +7,8 @@
     <ProjectGuid>{2FFCDC78-C616-42BA-A52A-AC86B7BFC3E8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Logging</RootNamespace>
-    <AssemblyName>Logging</AssemblyName>
+    <RootNamespace>TC.Logging</RootNamespace>
+    <AssemblyName>TC.Logging</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -31,7 +31,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Logging.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\TC.Logging.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

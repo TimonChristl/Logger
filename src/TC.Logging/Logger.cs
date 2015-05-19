@@ -3,9 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
-using Logging.Sinks;
+using TC.Logging.Sinks;
 
-namespace Logging
+namespace TC.Logging
 {
 
 	/// <summary>
@@ -119,7 +119,7 @@ namespace Logging
 		/// <summary>
 		/// Adds a new log message. Note that the nesting level of the log message will be overridden with the current nesting level
 		/// for the current thread. This method is ideal for feeding log messages from a different logging system to this one,
-		/// or to replay a stream of log messages from an <see cref="Logging.Sources.ILogSource"/>.
+		/// or to replay a stream of log messages from an <see cref="TC.Logging.Sources.ILogSource"/>.
 		/// </summary>
 		/// <param name="logMessage"></param>
 		public void Log(LogMessage logMessage)
