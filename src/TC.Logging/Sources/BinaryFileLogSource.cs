@@ -76,12 +76,12 @@ namespace TC.Logging.Sources
 		#region Protected methods
 
 		/// <inheritdoc/>
-		protected override void DisposeCore(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
 			if(disposing)
 				binaryReader.Close();
 
-			base.DisposeCore(disposing);
+			base.Dispose(disposing);
 		}
 
 		#endregion

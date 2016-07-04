@@ -39,12 +39,13 @@ namespace TC.Logging.Sinks
 			this.filename = filename;
 		}
 
-		#endregion
+        #endregion
 
-		#region Public methods
+        #region Public methods
 
-		/// <inheritdoc/>
-		public override void Process(LogMessage logMessage)
+        /// <inheritdoc/>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
+        public override void Process(LogMessage logMessage)
 		{
 			if(IsDisposed)
 				throw new ObjectDisposedException("TextFileLogSink");

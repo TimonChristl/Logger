@@ -25,23 +25,23 @@ namespace TC.Logging.Sinks
 
 		/// <summary>
 		/// Finalizes the <see cref="BaseLogSink"/> instance.
-		/// Calls <see cref="DisposeCore"/> with argument <c>false</c>.
+		/// Calls <see cref="Dispose(bool)"/> with argument <c>false</c>.
 		/// </summary>
 		~BaseLogSink()
 		{
 			if(!isDisposed)
-				DisposeCore(false);
+				Dispose(false);
 		}
 
 		/// <summary>
 		/// Disposes the <see cref="BaseLogSink"/> instance.
-		/// Calls <see cref="DisposeCore"/> with argument <c>true</c>.
+		/// Calls <see cref="Dispose(bool)"/> with argument <c>true</c>.
 		/// </summary>
 		public void Dispose()
 		{
 			if(!isDisposed)
 			{
-				DisposeCore(true);
+				Dispose(true);
 				isDisposed = true;
 				GC.SuppressFinalize(this);
 			}
@@ -50,11 +50,11 @@ namespace TC.Logging.Sinks
 		/// <summary>
 		/// Allows derived classes to dispose their members, if needed.
 		/// The argument <paramref name="disposing"/> tells whether the method
-		/// was called as part of a call to <see cref="Dispose"/> or
+		/// was called as part of a call to <see cref="Dispose()"/> or
 		/// by the finalizer.
 		/// </summary>
 		/// <param name="disposing"></param>
-		protected virtual void DisposeCore(bool disposing)
+		protected virtual void Dispose(bool disposing)
 		{
 		}
 
