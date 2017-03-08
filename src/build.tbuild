@@ -13,6 +13,12 @@
         <core:RegexSearchAndReplace Property="Temp" Pattern="@VERSION@" Replacement="${Version}.${ENV:BUILD_NUMBER}" />
         <fs:WriteTextFile Filename="${TBuild.ScriptDir}\CommonAssemblyInfo.cs" Property="${Temp}"/>
 
+        <core:Exec Filename="${Exe.NuGet}"
+                   Arguments="restore ${TBuild.ScriptDir}\TC.Logging.sln"
+                   WorkingDirectory="${TBuild.ScriptDir}"
+                   UseShellExecute="false"
+                   />
+
         <msbuild:MsBuild ProjectFile="${TBuild.ScriptDir}\TC.Logging.sln" Configuration="Release" Platform="Any CPU" Targets="Build"/>
 
         <fs:ReadTextFile Filename="${TBuild.ScriptDir}\TC.Logging.nuspec.in" Property="Temp"/>
