@@ -199,8 +199,11 @@ namespace TC.Logging
 			{
 				if(i > 0)
 					sb.Append(' ');
-				sb.AppendFormat("{0,-2:x2}", data[i]);
-			}
+                if(i < data.Length)
+				    sb.AppendFormat("{0,-2:x2}", data[i]);
+                else
+                    sb.Append("  ");
+            }
 			sb.Append(lineDrawingCharacters[4]);
 			sb.Append("Characters".PadRight(charactersWidth, ' ').Substring(0, charactersWidth));
 			sb.Append(lineDrawingCharacters[4]);
