@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TC.Logging.Tests
+namespace TC.Logging.Tests2
 {
     [TestClass]
     public class LoggerTests
