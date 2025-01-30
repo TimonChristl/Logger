@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace TC.Logging.Tests2
+﻿namespace TC.Logging.Tests2
 {
     [TestClass]
     public class LoggerTests
@@ -10,7 +7,7 @@ namespace TC.Logging.Tests2
         public void Verify_HexDump_DoesNotThrowForEmptyArrays()
         {
             var logger = new Logger();
-            logger.HexDump(Severity.Info, "", new byte[0]);
+            logger.HexDump(Severity.Info, "", []);
         }
     }
 }
