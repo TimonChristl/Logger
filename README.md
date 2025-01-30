@@ -1,6 +1,6 @@
 # TC.Logging
 
-A simple logging system for .NET 4.0 and higher.
+A simple logging system for NetStandard2.0 and Net8.0 or higher. The net8.0 version has nullability annotations.
 
 ## Features
 

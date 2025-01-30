@@ -1,21 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;net8.0</TargetFrameworks>
 		<Version>2.1.0</Version>
-      <Authors></Authors>
-      <Copyright>©2015-2019 by Timon Christl</Copyright>
-      <PackageProjectUrl>https://github.com/TimonChristl/TC.Logging</PackageProjectUrl>
-      <PackageLicenseUrl>https://github.com/TimonChristl/TC.Logging/blob/master/LICENSE</PackageLicenseUrl>
-      <RepositoryUrl></RepositoryUrl>
-      <Company />
-      <SignAssembly>true</SignAssembly>
-      <AssemblyOriginatorKeyFile>TC.snk</AssemblyOriginatorKeyFile>
-      <Description>Timon Christl's logging library</Description>
-      <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+		<Authors></Authors>
+		<Copyright>©2015-2025 by Timon Christl</Copyright>
+		<PackageProjectUrl>https://github.com/TimonChristl/TC.Logging</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl></RepositoryUrl>
+		<Company />
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>TC.snk</AssemblyOriginatorKeyFile>
+		<Description>Timon Christl's logging library</Description>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
 	<PropertyGroup Condition="$(TargetFramework) == 'net8.0'">
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
+	<ItemGroup>
+	  <None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
 </Project>
 
