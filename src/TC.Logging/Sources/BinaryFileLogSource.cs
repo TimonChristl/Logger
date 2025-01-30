@@ -16,8 +16,7 @@ namespace TC.Logging.Sources
 
 		#region Private fields
 
-		private string filename;
-		private BinaryReader binaryReader;
+		private readonly BinaryReader binaryReader;
 
 		#endregion
 
@@ -29,9 +28,7 @@ namespace TC.Logging.Sources
 		/// <param name="filename"></param>
 		public BinaryFileLogSource(string filename)
 		{
-			this.filename = filename;
-
-			FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+			var stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
 
 			binaryReader = new BinaryReader(stream);
 		}
@@ -45,8 +42,12 @@ namespace TC.Logging.Sources
 		{
 			while(true)
 			{
+#if NET8_0_OR_GREATER
+                ObjectDisposedException.ThrowIf(IsDisposed, this);
+#else
 				if(IsDisposed)
 					throw new ObjectDisposedException("BinaryFileLogSource");
+#endif
 
 				if(binaryReader.BaseStream.Position >= binaryReader.BaseStream.Length)
 					yield break;
@@ -103,11 +104,14 @@ namespace TC.Logging.Sources
 		/// <inheritdoc/>
 		public UnknownBinaryLogMessageVersionException(string message, Exception inner) : base(message, inner) { }
 
+
+#if !NET8_0_OR_GREATER
 		/// <inheritdoc/>
 		protected UnknownBinaryLogMessageVersionException(
 		  System.Runtime.Serialization.SerializationInfo info,
 		  System.Runtime.Serialization.StreamingContext context)
 			: base(info, context) { }
+#endif
 	}
 
 }

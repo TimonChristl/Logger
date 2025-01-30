@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using TC.Logging.Formatters;
 
+#if NET8_0_OR_GREATER
+#pragma warning disable IDE0290
+#endif
+
 namespace TC.Logging.Sinks
 {
 
@@ -38,18 +42,22 @@ namespace TC.Logging.Sinks
 
 			public ConsoleColorTuple(ConsoleColor background, ConsoleColor foreground)
 			{
-				this.Background = background;
-				this.Foreground = foreground;
+				Background = background;
+				Foreground = foreground;
 			}
 		}
 
-		#endregion
+        #endregion
 
-		#region Private fields
+        #region Private fields
 
-		private static Dictionary<Severity, ConsoleColorTuple> colorsForSeverities = new Dictionary<Severity, ConsoleColorTuple>()
+#if NET8_0_OR_GREATER
+        private static readonly Dictionary<Severity, ConsoleColorTuple> colorsForSeverities = new()
+#else
+		private static readonly Dictionary<Severity, ConsoleColorTuple> colorsForSeverities = new Dictionary<Severity, ConsoleColorTuple>()
+#endif
 		{
-			{ Severity.Emergency, new ConsoleColorTuple(ConsoleColor.Red, ConsoleColor.White) },
+            { Severity.Emergency, new ConsoleColorTuple(ConsoleColor.Red, ConsoleColor.White) },
 			{ Severity.Alert, new ConsoleColorTuple(ConsoleColor.DarkRed, ConsoleColor.Yellow) },
 			{ Severity.Critical, new ConsoleColorTuple(ConsoleColor.Black, ConsoleColor.Red) },
 			{ Severity.Error, new ConsoleColorTuple(ConsoleColor.Black, ConsoleColor.DarkRed) },
@@ -59,24 +67,24 @@ namespace TC.Logging.Sinks
 			{ Severity.Debug, new ConsoleColorTuple(ConsoleColor.Black, ConsoleColor.DarkGray) },
 		};
 
-		private ConsoleLogSinkFlags flags;
+		private readonly ConsoleLogSinkFlags flags;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		/// Initializes a new <see cref="ConsoleLogSink"/> instance with the given flags and indent width.
-		/// </summary>
-		/// <param name="flags"></param>
-		/// <param name="indentWidth"></param>
-		/// <param name="formatter"></param>
+        /// <summary>
+        /// Initializes a new <see cref="ConsoleLogSink"/> instance with the given flags and indent width.
+        /// </summary>
+        /// <param name="flags"></param>
+        /// <param name="indentWidth"></param>
+        /// <param name="formatter"></param>
 #if NET8_0_OR_GREATER
         public ConsoleLogSink(ConsoleLogSinkFlags flags = ConsoleLogSinkFlags.UseColors, int indentWidth = 4, ITextLogMessageFormatter? formatter = null)
 #else
 		public ConsoleLogSink(ConsoleLogSinkFlags flags = ConsoleLogSinkFlags.UseColors, int indentWidth = 4, ITextLogMessageFormatter formatter = null)
 #endif
-			: base(indentWidth, formatter ?? new DefaultShortTextLogMessageFormatter())
+            : base(indentWidth, formatter ?? new DefaultShortTextLogMessageFormatter())
 		{
 			this.flags = flags;
 		}
@@ -88,28 +96,35 @@ namespace TC.Logging.Sinks
 		/// <inheritdoc/>
 		public override void Process(LogMessage logMessage)
 		{
+#if NET8_0_OR_GREATER
+			ObjectDisposedException.ThrowIf(IsDisposed, this);
+#else
 			if(IsDisposed)
 				throw new ObjectDisposedException("ConsoleLogSink");
+#endif
 
-			#region Prepare colors
+            #region Prepare colors
 
-			ConsoleColor oldBackgroundColor = Console.BackgroundColor;
+            ConsoleColor oldBackgroundColor = Console.BackgroundColor;
 			ConsoleColor oldForegroundColor = Console.ForegroundColor;
 
 			ConsoleColor newBackgroundColor = oldBackgroundColor;
 			ConsoleColor newForegroundColor = newBackgroundColor;
-			ConsoleColorTuple colors;
-			if(colorsForSeverities.TryGetValue(logMessage.Severity, out colors))
+#if NET8_0_OR_GREATER
+            if(colorsForSeverities.TryGetValue(logMessage.Severity, out ConsoleColorTuple? colors))
+#else
+			if(colorsForSeverities.TryGetValue(logMessage.Severity, out ConsoleColorTuple colors))
+#endif
 			{
-				newBackgroundColor = colors.Background;
-				newForegroundColor = colors.Foreground;
-			}
+                newBackgroundColor = colors.Background;
+                newForegroundColor = colors.Foreground;
+            }
 
-			#endregion
+            #endregion
 
-			#region Output
+            #region Output
 
-			if((flags & ConsoleLogSinkFlags.UseColors) == ConsoleLogSinkFlags.UseColors)
+            if((flags & ConsoleLogSinkFlags.UseColors) == ConsoleLogSinkFlags.UseColors)
 			{
 				Console.BackgroundColor = newBackgroundColor;
 				Console.ForegroundColor = newForegroundColor;

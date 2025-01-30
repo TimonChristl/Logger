@@ -14,76 +14,93 @@ namespace TC.Logging
 	public sealed class Logger : IDisposable
 	{
 
-		#region Private fields
+        #region Private fields
 
-		private object lockObj = new object();
+#if NET8_0_OR_GREATER
+        private readonly object lockObj = new();
+        private readonly List<ILogSink> logSinks = [];
+#else
+		private readonly object lockObj = new object();
+		private readonly List<ILogSink> logSinks = new List<ILogSink>();
+#endif
 
-		private List<ILogSink> logSinks = new List<ILogSink>();
-		private Severity thresholdLogSeverity = Severity.Debug;
+        private Severity thresholdLogSeverity = Severity.Debug;
 		private bool deferred = false;
-		private ConcurrentDictionary<int, int> nestingLevelsPerThread = new ConcurrentDictionary<int, int>();
-		private Queue<LogMessage> pendingLogMessages = new Queue<LogMessage>();
 
-		#endregion
+#if NET8_0_OR_GREATER
+        private readonly ConcurrentDictionary<int, int> nestingLevelsPerThread = [];
+		private readonly Queue<LogMessage> pendingLogMessages = [];
+#else
+		private readonly ConcurrentDictionary<int, int> nestingLevelsPerThread = new ConcurrentDictionary<int, int>();
+        private readonly Queue<LogMessage> pendingLogMessages = new Queue<LogMessage>();
+#endif
 
-		#region Constructor
+        #endregion
 
-		/// <summary>
-		/// Initializes the logger and attaches any supplied log sinks.
-		/// </summary>
-		/// <param name="logSinks"></param>
-		public Logger(params ILogSink[] logSinks)
+        #region Constructor
+
+        /// <summary>
+        /// Initializes the logger and attaches any supplied log sinks.
+        /// </summary>
+        /// <param name="logSinks"></param>
+        public Logger(params ILogSink[] logSinks)
 		{
 			this.logSinks.AddRange(logSinks);
 		}
 
-		#endregion
+        #endregion
 
-		#region Public methods
+        #region Public methods
 
-		/// <summary>
-		/// Adds a new log message with severity <see cref="Severity.Info"/>, text <paramref name="text"/>,
-		/// and extra data <paramref name="extraData"/>, if any.
-		/// </summary>
-		/// <param name="text"></param>
-		/// <param name="extraData"></param>
+        /// <summary>
+        /// Adds a new log message with severity <see cref="Severity.Info"/>, text <paramref name="text"/>,
+        /// and extra data <paramref name="extraData"/>, if any.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="extraData"></param>
 #if NET8_0_OR_GREATER
         public void Log(string text, object? extraData = null)
 #else
 		public void Log(string text, object extraData = null)
 #endif
-		{
+        {
+#if NET8_0_OR_GREATER
+			ObjectDisposedException.ThrowIf(isDisposed, this);
+#else
 			if(isDisposed)
 				throw new ObjectDisposedException("Logger");
+#endif
 
-			int nestingLevel;
-			if(!nestingLevelsPerThread.TryGetValue(Thread.CurrentThread.ManagedThreadId, out nestingLevel))
-				nestingLevel = 0;
+            if(!nestingLevelsPerThread.TryGetValue(Environment.CurrentManagedThreadId, out int nestingLevel))
+                nestingLevel = 0;
 
-			ProcessMessage(new LogMessage(Severity.Info, text, nestingLevel, extraData));
+            ProcessMessage(new LogMessage(Severity.Info, text, nestingLevel, extraData));
 		}
 
-		/// <summary>
-		/// Adds a new log message with severity <paramref name="severity"/>, text <paramref name="text"/>,
-		/// and extra data <paramref name="extraData"/>, if any.
-		/// </summary>
-		/// <param name="severity"></param>
-		/// <param name="text"></param>
-		/// <param name="extraData"></param>
+        /// <summary>
+        /// Adds a new log message with severity <paramref name="severity"/>, text <paramref name="text"/>,
+        /// and extra data <paramref name="extraData"/>, if any.
+        /// </summary>
+        /// <param name="severity"></param>
+        /// <param name="text"></param>
+        /// <param name="extraData"></param>
 #if NET8_0_OR_GREATER
         public void Log(Severity severity, string text, object? extraData = null)
 #else
 		public void Log(Severity severity, string text, object extraData = null)
 #endif
-		{
+        {
+#if NET8_0_OR_GREATER
+			ObjectDisposedException.ThrowIf(isDisposed, this);
+#else
 			if(isDisposed)
 				throw new ObjectDisposedException("Logger");
+#endif
 
-			int nestingLevel;
-			if(!nestingLevelsPerThread.TryGetValue(Thread.CurrentThread.ManagedThreadId, out nestingLevel))
-				nestingLevel = 0;
+            if(!nestingLevelsPerThread.TryGetValue(Environment.CurrentManagedThreadId, out int nestingLevel))
+                nestingLevel = 0;
 
-			ProcessMessage(new LogMessage(severity, text, nestingLevel, extraData));
+            ProcessMessage(new LogMessage(severity, text, nestingLevel, extraData));
 		}
 
 		/// <summary>
@@ -96,17 +113,19 @@ namespace TC.Logging
 		/// <param name="exception"></param>
 		public void Log(Exception exception)
 		{
+#if NET8_0_OR_GREATER
+            ObjectDisposedException.ThrowIf(isDisposed, this);
+#else
 			if(isDisposed)
 				throw new ObjectDisposedException("Logger");
+#endif
 
-			int nestingLevel;
-			if(!nestingLevelsPerThread.TryGetValue(Thread.CurrentThread.ManagedThreadId, out nestingLevel))
-				nestingLevel = 0;
+            if(!nestingLevelsPerThread.TryGetValue(Environment.CurrentManagedThreadId, out int nestingLevel))
+                nestingLevel = 0;
 
-			ProcessMessage(new LogMessage(Severity.Error, string.Format("{0}: {1}", exception.GetType().FullName, exception.Message), nestingLevel, exception.StackTrace));
+            ProcessMessage(new LogMessage(Severity.Error, string.Format("{0}: {1}", exception.GetType().FullName, exception.Message), nestingLevel, exception.StackTrace));
 
-			AggregateException aggregateException = exception as AggregateException;
-			if(aggregateException != null)
+			if(exception is AggregateException aggregateException)
 			{
 				BeginBlock();
 				for(int i = 0; i < aggregateException.InnerExceptions.Count; i++)
@@ -132,13 +151,17 @@ namespace TC.Logging
 		/// <param name="logMessage"></param>
 		public void Log(LogMessage logMessage)
 		{
+#if NET8_0_OR_GREATER
+            ObjectDisposedException.ThrowIf(isDisposed, this);
+#else
 			if(isDisposed)
 				throw new ObjectDisposedException("Logger");
-			int nestingLevel;
-			if(!nestingLevelsPerThread.TryGetValue(Thread.CurrentThread.ManagedThreadId, out nestingLevel))
-				nestingLevel = 0;
+#endif
 
-			ProcessMessage(new LogMessage(logMessage.Severity, logMessage.Text, nestingLevel, logMessage.ExtraData));
+            if(!nestingLevelsPerThread.TryGetValue(Environment.CurrentManagedThreadId, out int nestingLevel))
+                nestingLevel = 0;
+
+            ProcessMessage(new LogMessage(logMessage.Severity, logMessage.Text, nestingLevel, logMessage.ExtraData));
 		}
 
 		/// <summary>
@@ -146,7 +169,7 @@ namespace TC.Logging
 		/// </summary>
 		public void BeginBlock()
 		{
-			nestingLevelsPerThread.AddOrUpdate(Thread.CurrentThread.ManagedThreadId, 1, (k, v) => v + 1);
+			nestingLevelsPerThread.AddOrUpdate(Environment.CurrentManagedThreadId, 1, (k, v) => v + 1);
 		}
 
 		/// <summary>
@@ -154,7 +177,7 @@ namespace TC.Logging
 		/// </summary>
 		public void EndBlock()
 		{
-			nestingLevelsPerThread.AddOrUpdate(Thread.CurrentThread.ManagedThreadId, 0, (k, v) => Math.Max(0, v - 1));
+			nestingLevelsPerThread.AddOrUpdate(Environment.CurrentManagedThreadId, 0, (k, v) => Math.Max(0, v - 1));
 		}
 
 		/// <summary>
@@ -176,8 +199,8 @@ namespace TC.Logging
 		{
 			int length2 = length.GetValueOrDefault(data.Length);
 
-			StringBuilder sb = new StringBuilder();
-			StringBuilder charactersSB = new StringBuilder();
+			var sb = new StringBuilder();
+			var charactersSB = new StringBuilder();
 
 			string lineDrawingCharacters = useUnicodeChars
 				? "┌─┬┐│├┼┤└┴┘"
@@ -201,8 +224,12 @@ namespace TC.Logging
 
 			// Header line
 			sb.Append(lineDrawingCharacters[4]);
+#if NET8_0_OR_GREATER
+            sb.Append("Offset".PadRight(offsetWidth, ' ').AsSpan(0, offsetWidth));
+#else
 			sb.Append("Offset".PadRight(offsetWidth, ' ').Substring(0, offsetWidth));
-			sb.Append(lineDrawingCharacters[4]);
+#endif
+            sb.Append(lineDrawingCharacters[4]);
 			for(int i = 0; i < bytesPerLine; i++)
 			{
 				if(i > 0)
@@ -213,8 +240,12 @@ namespace TC.Logging
                     sb.Append("  ");
             }
 			sb.Append(lineDrawingCharacters[4]);
+#if NET8_0_OR_GREATER
+            sb.Append("Characters".PadRight(charactersWidth, ' ').AsSpan(0, charactersWidth));
+#else
 			sb.Append("Characters".PadRight(charactersWidth, ' ').Substring(0, charactersWidth));
-			sb.Append(lineDrawingCharacters[4]);
+#endif
+            sb.Append(lineDrawingCharacters[4]);
 			sb.AppendLine();
 
 			// Frame between header and body
@@ -358,10 +389,14 @@ namespace TC.Logging
 			get { return deferred; }
 			set
 			{
+#if NET8_0_OR_GREATER
+                ObjectDisposedException.ThrowIf(isDisposed, this);
+#else
 				if(isDisposed)
 					throw new ObjectDisposedException("Logger");
+#endif
 
-				if(deferred != value)
+                if(deferred != value)
 				{
 					deferred = value;
 					if(deferred == false)
@@ -391,7 +426,7 @@ namespace TC.Logging
 		~Logger()
 		{
 			if(!isDisposed)
-				DisposeCore(false);
+				Dispose(false);
 		}
 
 		/// <summary>
@@ -401,13 +436,13 @@ namespace TC.Logging
 		{
 			if(!isDisposed)
 			{
-				DisposeCore(true);
+				Dispose(true);
 				isDisposed = true;
 				GC.SuppressFinalize(this);
 			}
 		}
 
-		private void DisposeCore(bool disposing)
+		private void Dispose(bool disposing)
 		{
 			if(disposing)
 			{

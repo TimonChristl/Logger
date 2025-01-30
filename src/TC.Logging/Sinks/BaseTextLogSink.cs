@@ -15,25 +15,25 @@ namespace TC.Logging.Sinks
 
 		#region Private fields
 
-		private int indentWidth;
-		private ITextLogMessageFormatter formatter;
+		private readonly int indentWidth;
+		private readonly ITextLogMessageFormatter formatter;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		/// Initializes a new instance of <see cref="BaseTextLogSink"/> with the given indent width.
-		/// </summary>
-		/// <param name="indentWidth"></param>
-		/// <param name="formatter"></param>
+        /// <summary>
+        /// Initializes a new instance of <see cref="BaseTextLogSink"/> with the given indent width.
+        /// </summary>
+        /// <param name="indentWidth"></param>
+        /// <param name="formatter"></param>
 #if NET8_0_OR_GREATER
         public BaseTextLogSink(int indentWidth, ITextLogMessageFormatter? formatter = null)
 #else
 		public BaseTextLogSink(int indentWidth, ITextLogMessageFormatter formatter = null)
 #endif
-		{
-			this.indentWidth = indentWidth;
+        {
+            this.indentWidth = indentWidth;
 			this.formatter = formatter ?? new DefaultShortTextLogMessageFormatter();
 		}
 

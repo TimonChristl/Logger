@@ -3,6 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using TC.Logging.Formatters;
 
+#if NET8_0_OR_GREATER
+#pragma warning disable IDE0290
+#endif
+
 namespace TC.Logging.Sinks
 {
 
@@ -12,19 +16,19 @@ namespace TC.Logging.Sinks
 	public class TraceLogSink : BaseTextLogSink
 	{
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		/// Initializes a new <see cref="TraceLogSink"/> instance.
-		/// </summary>
-		/// <param name="indentWidth"></param>
-		/// <param name="formatter"></param>
+        /// <summary>
+        /// Initializes a new <see cref="TraceLogSink"/> instance.
+        /// </summary>
+        /// <param name="indentWidth"></param>
+        /// <param name="formatter"></param>
 #if NET8_0_OR_GREATER
         public TraceLogSink(int indentWidth = 4, ITextLogMessageFormatter? formatter = null)
 #else
 		public TraceLogSink(int indentWidth = 4, ITextLogMessageFormatter formatter = null)
 #endif
-			: base(indentWidth, formatter ?? new DefaultTextLogMessageFormatter())
+            : base(indentWidth, formatter ?? new DefaultTextLogMessageFormatter())
 		{
 		}
 
@@ -35,10 +39,14 @@ namespace TC.Logging.Sinks
 		/// <inheritdoc/>
 		public override void Process(LogMessage logMessage)
 		{
+#if NET8_0_OR_GREATER
+			ObjectDisposedException.ThrowIf(IsDisposed, this);
+#else
 			if(IsDisposed)
 				throw new ObjectDisposedException("TraceLogSink");
+#endif
 
-			Trace.Write(FormatLogMessage(logMessage));
+            Trace.Write(FormatLogMessage(logMessage));
 		}
 
 		#endregion

@@ -5,6 +5,11 @@ using System.Text;
 using System.Threading;
 using TC.Logging.Formatters;
 
+#if NET8_0_OR_GREATER
+#pragma warning disable IDE0290
+#pragma warning disable IDE0063
+#endif
+
 namespace TC.Logging.Sinks
 {
 
@@ -21,24 +26,24 @@ namespace TC.Logging.Sinks
 
 		#region Private fields
 
-		private string filename;
+		private readonly string filename;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		/// Initializes a new <see cref="TextFileLogSink"/> instance with the given filename, indent width and formatter.
-		/// </summary>
-		/// <param name="filename"></param>
-		/// <param name="indentWidth"></param>
-		/// <param name="formatter"></param>
+        /// <summary>
+        /// Initializes a new <see cref="TextFileLogSink"/> instance with the given filename, indent width and formatter.
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="indentWidth"></param>
+        /// <param name="formatter"></param>
 #if NET8_0_OR_GREATER
         public TextFileLogSink(string filename, int indentWidth = 4, ITextLogMessageFormatter? formatter = null)
 #else
 		public TextFileLogSink(string filename, int indentWidth = 4, ITextLogMessageFormatter formatter = null)
 #endif
-			: base(indentWidth, formatter ?? new DefaultTextLogMessageFormatter())
+            : base(indentWidth, formatter ?? new DefaultTextLogMessageFormatter())
 		{
 			this.filename = filename;
 		}
@@ -48,15 +53,18 @@ namespace TC.Logging.Sinks
         #region Public methods
 
         /// <inheritdoc/>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")]
         public override void Process(LogMessage logMessage)
 		{
+#if NET8_0_OR_GREATER
+			ObjectDisposedException.ThrowIf(IsDisposed, this);
+#else
 			if(IsDisposed)
 				throw new ObjectDisposedException("TextFileLogSink");
+#endif
 
-			using(Stream stream = new FileStream(filename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
+            using(Stream stream = new FileStream(filename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite))
 			{
-				using(StreamWriter streamWriter = new StreamWriter(stream))
+				using(var streamWriter = new StreamWriter(stream))
 				{
 					streamWriter.Write(FormatLogMessage(logMessage));
 
@@ -65,14 +73,14 @@ namespace TC.Logging.Sinks
 			}
 		}
 
-		/// <summary>
-		/// Determines whether the log directory is writeable by attempting to create a file in the directory.
-		/// 
-		/// This method exists only because of a legacy application and will be obsoleted at some time in the future.
-		/// </summary>
-		/// <param name="messages"></param>
-		/// <returns></returns>
-		public bool IsLogDirectoryWriteable(StringBuilder messages)
+        /// <summary>
+        /// Determines whether the log directory is writeable by attempting to create a file in the directory.
+        /// 
+        /// This method exists only because of a legacy application and will be obsoleted at some time in the future.
+        /// </summary>
+        /// <param name="messages"></param>
+        /// <returns></returns>
+        public bool IsLogDirectoryWriteable(StringBuilder messages)
 		{
 #if NET8_0_OR_GREATER
             string? logDirectory = Path.GetDirectoryName(filename);
@@ -103,7 +111,7 @@ namespace TC.Logging.Sinks
 				string filename = Path.Combine(dirname, "test_" + Guid.NewGuid().ToString("N"));
 				try
 				{
-					using(FileStream fs = File.Create(filename))
+					using(var fs = File.Create(filename))
 					{
 						return true;
 					}
@@ -120,14 +128,14 @@ namespace TC.Logging.Sinks
 			}
 		}
 
-		#endregion
+        #endregion
 
-		#region Public properties
+        #region Public properties
 
-		/// <summary>
-		/// Filename of the log file
-		/// </summary>
-		public string LogFileName
+        /// <summary>
+        /// Filename of the log file
+        /// </summary>
+        public string LogFileName
 		{
 			get { return filename; }
 		}

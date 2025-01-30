@@ -21,8 +21,8 @@ namespace TC.Logging.Sinks
 
 		#region Private fields
 
-		private BinaryWriter binaryWriter;
-		private string filename;
+		private readonly BinaryWriter binaryWriter;
+		private readonly string filename;
 
 		#endregion
 
@@ -36,7 +36,7 @@ namespace TC.Logging.Sinks
 		{
 			this.filename = filename;
 
-			FileStream stream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+			var stream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
 			stream.Seek(0, SeekOrigin.End);
 
 			binaryWriter = new BinaryWriter(stream);
@@ -49,10 +49,14 @@ namespace TC.Logging.Sinks
 		/// <inheritdoc/>
 		public override void Process(LogMessage logMessage)
 		{
+#if NET8_0_OR_GREATER
+			ObjectDisposedException.ThrowIf(IsDisposed, this);
+#else
 			if(IsDisposed)
 				throw new ObjectDisposedException("BinaryFileLogSink");
+#endif
 
-			binaryWriter.Write((byte)1); // LogMessage Version
+            binaryWriter.Write((byte)1); // LogMessage Version
 			binaryWriter.Write(logMessage.TimeStamp.ToBinary());
 			binaryWriter.Write((byte)logMessage.Severity);
 			binaryWriter.Write(logMessage.Text);
@@ -62,7 +66,7 @@ namespace TC.Logging.Sinks
 #else
 			string extraDataAsString = logMessage.GetExtraDataAsString();
 #endif
-			if(extraDataAsString != null)
+            if(extraDataAsString != null)
 				binaryWriter.Write(extraDataAsString);
 		}
 

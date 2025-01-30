@@ -17,9 +17,9 @@ namespace TC.Logging.Formatters
 		/// <inheritdoc/>
 		public string Format(LogMessage logMessage, int indentWidth)
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
-			sb.Append("[");
+			sb.Append('[');
 			sb.AppendFormat(logMessage.TimeStamp.ToString("yyyy-MM-dd HH:mm:ss.fff"));
 			sb.Append("] [");
 			sb.Append(logMessage.Severity.ToString().PadRight(7, ' '));
@@ -32,10 +32,10 @@ namespace TC.Logging.Formatters
 #else
 			string extraDataAsString = logMessage.GetExtraDataAsString();
 #endif
-			if(extraDataAsString != null)
+            if(extraDataAsString != null)
 				sb.AppendLine(extraDataAsString);
 
-			StringBuilder sb2 = new StringBuilder();
+			var sb2 = new StringBuilder();
 
 			string indentation = string.Empty.PadRight(36 + logMessage.NestingDepth * indentWidth, ' ');
 
