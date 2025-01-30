@@ -33,7 +33,11 @@ namespace TC.Logging.Sinks
 		/// <param name="filename"></param>
 		/// <param name="indentWidth"></param>
 		/// <param name="formatter"></param>
+#if NET8_0_OR_GREATER
+        public TextFileLogSink(string filename, int indentWidth = 4, ITextLogMessageFormatter? formatter = null)
+#else
 		public TextFileLogSink(string filename, int indentWidth = 4, ITextLogMessageFormatter formatter = null)
+#endif
 			: base(indentWidth, formatter ?? new DefaultTextLogMessageFormatter())
 		{
 			this.filename = filename;
@@ -70,9 +74,13 @@ namespace TC.Logging.Sinks
 		/// <returns></returns>
 		public bool IsLogDirectoryWriteable(StringBuilder messages)
 		{
+#if NET8_0_OR_GREATER
+            string? logDirectory = Path.GetDirectoryName(filename);
+#else
 			string logDirectory = Path.GetDirectoryName(filename);
+#endif
 
-			if(!IsWriteableDir(logDirectory))
+            if(logDirectory == null || !IsWriteableDir(logDirectory))
 			{
 				messages.AppendFormat("Directory LogDirectory {0} is not writeable\n", logDirectory);
 				return false;

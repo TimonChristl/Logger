@@ -47,7 +47,11 @@ namespace TC.Logging
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="extraData"></param>
+#if NET8_0_OR_GREATER
+        public void Log(string text, object? extraData = null)
+#else
 		public void Log(string text, object extraData = null)
+#endif
 		{
 			if(isDisposed)
 				throw new ObjectDisposedException("Logger");
@@ -66,7 +70,11 @@ namespace TC.Logging
 		/// <param name="severity"></param>
 		/// <param name="text"></param>
 		/// <param name="extraData"></param>
+#if NET8_0_OR_GREATER
+        public void Log(Severity severity, string text, object? extraData = null)
+#else
 		public void Log(Severity severity, string text, object extraData = null)
+#endif
 		{
 			if(isDisposed)
 				throw new ObjectDisposedException("Logger");

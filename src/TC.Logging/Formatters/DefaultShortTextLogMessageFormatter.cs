@@ -23,7 +23,11 @@ namespace TC.Logging.Formatters
 			sb.Append(string.Empty.PadLeft(logMessage.NestingDepth * indentWidth, ' '));
 			sb.Append(logMessage.Text);
 			sb.AppendLine();
+#if NET8_0_OR_GREATER
+            string? extraDataAsString = logMessage.GetExtraDataAsString();
+#else
 			string extraDataAsString = logMessage.GetExtraDataAsString();
+#endif
 			if(extraDataAsString != null)
 				sb.AppendLine(extraDataAsString);
 

@@ -18,7 +18,11 @@ namespace TC.Logging
 		private Severity severity;
 		private string text;
 		private int nestingDepth;
-		private object extraData;
+#if NET8_0_OR_GREATER
+        private readonly object? extraData;
+#else
+		private readonly object extraData;
+#endif
 
 		#endregion
 
@@ -32,7 +36,11 @@ namespace TC.Logging
 		/// <param name="text"></param>
 		/// <param name="nestingDepth"></param>
 		/// <param name="extraData"></param>
+#if NET8_0_OR_GREATER
+        internal LogMessage(DateTime timeStamp, Severity severity, string text, int nestingDepth, object? extraData = null)
+#else
 		internal LogMessage(DateTime timeStamp, Severity severity, string text, int nestingDepth, object extraData = null)
+#endif
 		{
 			this.timeStamp = timeStamp;
 			this.severity = severity;
@@ -48,7 +56,11 @@ namespace TC.Logging
 		/// <param name="text"></param>
 		/// <param name="nestingDepth"></param>
 		/// <param name="extraData"></param>
+#if NET8_0_OR_GREATER
+        public LogMessage(Severity severity, string text, int nestingDepth, object? extraData = null)
+#else
 		public LogMessage(Severity severity, string text, int nestingDepth, object extraData = null)
+#endif
 		{
 			timeStamp = DateTime.UtcNow;
 			this.severity = severity;
@@ -71,7 +83,11 @@ namespace TC.Logging
 		/// Returns the extra data converted to a string.
 		/// </summary>
 		/// <returns></returns>
+#if NET8_0_OR_GREATER
+        public string? GetExtraDataAsString()
+#else
 		public string GetExtraDataAsString()
+#endif
 		{
 			if(extraData == null)
 				return null;
@@ -122,7 +138,11 @@ namespace TC.Logging
 		/// <summary>
 		/// User-defined extra data of the log message.
 		/// </summary>
+#if NET8_0_OR_GREATER
+        public object? ExtraData
+#else
 		public object ExtraData
+#endif
 		{
 			get { return extraData; }
 		}

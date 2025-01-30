@@ -19,7 +19,11 @@ namespace TC.Logging.Sinks
 		/// </summary>
 		/// <param name="indentWidth"></param>
 		/// <param name="formatter"></param>
+#if NET8_0_OR_GREATER
+        public TraceLogSink(int indentWidth = 4, ITextLogMessageFormatter? formatter = null)
+#else
 		public TraceLogSink(int indentWidth = 4, ITextLogMessageFormatter formatter = null)
+#endif
 			: base(indentWidth, formatter ?? new DefaultTextLogMessageFormatter())
 		{
 		}

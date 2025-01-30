@@ -71,7 +71,11 @@ namespace TC.Logging.Sinks
 		/// <param name="flags"></param>
 		/// <param name="indentWidth"></param>
 		/// <param name="formatter"></param>
+#if NET8_0_OR_GREATER
+        public ConsoleLogSink(ConsoleLogSinkFlags flags = ConsoleLogSinkFlags.UseColors, int indentWidth = 4, ITextLogMessageFormatter? formatter = null)
+#else
 		public ConsoleLogSink(ConsoleLogSinkFlags flags = ConsoleLogSinkFlags.UseColors, int indentWidth = 4, ITextLogMessageFormatter formatter = null)
+#endif
 			: base(indentWidth, formatter ?? new DefaultShortTextLogMessageFormatter())
 		{
 			this.flags = flags;

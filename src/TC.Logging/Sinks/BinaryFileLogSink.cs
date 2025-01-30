@@ -57,7 +57,11 @@ namespace TC.Logging.Sinks
 			binaryWriter.Write((byte)logMessage.Severity);
 			binaryWriter.Write(logMessage.Text);
 			binaryWriter.Write(logMessage.NestingDepth);
+#if NET8_0_OR_GREATER
+            string? extraDataAsString = logMessage.GetExtraDataAsString();
+#else
 			string extraDataAsString = logMessage.GetExtraDataAsString();
+#endif
 			if(extraDataAsString != null)
 				binaryWriter.Write(extraDataAsString);
 		}
